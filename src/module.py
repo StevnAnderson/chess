@@ -102,6 +102,9 @@ class Module:
                     if target.getTeam() == p.getTeam():
                         return False
                 self.move(p,d)
+            case "bishop":
+                if not p.legalMove(d,target):
+                    return False
             case "knight":
                 if not p.legalMove(d, target):
                     return False
