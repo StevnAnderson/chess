@@ -81,7 +81,8 @@ class Module:
         self.gb.set((8,8),Rook(2,(8,8)))
 
 
-    def moveCheck(self, p,d): # p for piece, d for destination
+    def moveCheck(self,current,d): # p for piece, d for destination
+        p = self.gb.get(current)
         if p == 0:
             return False
         target = self.gb.get(d)

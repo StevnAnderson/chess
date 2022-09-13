@@ -6,7 +6,7 @@ class TestChess(unittest.TestCase):
 
     def test_pawn_1step(self):
         m = src.module.Module()
-        m.moveCheck(m.gb.get((1,2)),(1,4))
+        m.moveCheck((1,2),(1,4))
         p = m.gb.get((1,4))
         square = m.gb.get((1,2))
         correct = Pawn(1,(1,4))
@@ -22,7 +22,7 @@ class TestChess(unittest.TestCase):
         m.gb.set((1,3), Knight(1,(1,3)))
         pawn = m.gb.get((1,2))
         knight = m.gb.get((1,3))
-        m.moveCheck(m.gb.get((1,2)), (1,3))
+        m.moveCheck((1,2), (1,3))
         self.assertEqual(m.gb.get((1,2)), pawn, "Pawn should not move")
         self.assertEqual(m.gb.get((1,3)), knight, "Knight should not be replaced")
 
