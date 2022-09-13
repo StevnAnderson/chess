@@ -136,7 +136,6 @@ class Module:
         self.turn = 1
         return
 
-        # something
     
     def display(self):
         t = "White" if self.turn == 1 else 2
