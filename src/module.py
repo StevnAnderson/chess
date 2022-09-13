@@ -154,3 +154,9 @@ class Module:
                     print(self.gb.get((m,n)), end=" | ")
             print("\n     --------------------------------------------------------------")
         print("   |   1   |   2   |   3   |   4   |   5   |   6   |   7   |   8   |\n")
+
+    def get(self,c):
+        return self.gb.get(c)
+    
+    def set(self,c,p):
+        return self.gb.set(c,p)
