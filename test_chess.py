@@ -29,6 +29,12 @@ class TestChess(unittest.TestCase):
     def test_pawn_capture(self):
         m = src.module.Module()
         pawn = Pawn(1,(3,3))
+        rook = Rook(2,(4,4))
+        m.set((3,3),pawn)
+        m.set((3,4), rook)
+        m.moveCheck((3,3),(4,4))
+        self.assertEqual(m.get((3,3)),0,"After attacking, pawn should have moved")
+
 
 if __name__ == "__main__":
     unittest.main()
