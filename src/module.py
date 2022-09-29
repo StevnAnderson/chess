@@ -11,6 +11,7 @@ class Module:
     def __init__(self):
         self.reset()
 
+
     def reset(self):
         self.turnNum = 1
         self.turn = 1
@@ -132,7 +133,8 @@ class Module:
         self.gb.set(d,p)
         p.move(d)
         self.toggleTurn()
-    
+
+
     def toggleTurn(self):
         if self.turn == 1:
             self.turn = 2
@@ -140,7 +142,7 @@ class Module:
         self.turn = 1
         return
 
-    
+
     def display(self):
         t = "White" if self.turn == 1 else 2
         print("\n", "Player's Turn:", t, "  Turn Number:", self.turnNum)
@@ -155,8 +157,24 @@ class Module:
             print("\n     --------------------------------------------------------------")
         print("   |   1   |   2   |   3   |   4   |   5   |   6   |   7   |   8   |\n")
 
+
     def get(self,c):
         return self.gb.get(c)
+
     
     def set(self,c,p):
-        return self.gb.set(c,p)
+        if p == 0 or (p.x()==c[0] and p.y()==c[1]):
+            self.gb.set(c,p)
+            return
+        else:
+             return False
+
+    
+    def save(self,name):
+        self.gb.save(name)
+    
+
+    def load(self,name):
+        return self.gb.load(name)
+    
+    
