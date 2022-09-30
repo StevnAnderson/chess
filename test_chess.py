@@ -110,7 +110,6 @@ class TestChess(unittest.TestCase):
             m.display()
             raise
 
-
     def test_Wrook_movementX(self):
         m = src.module.Module()
         rook = Rook(m.genID(), 1,(1,4))
@@ -118,7 +117,6 @@ class TestChess(unittest.TestCase):
         m.moveCheck((1,4),(4,4))
         self.assertEqual(m.get((4,4)), rook, "Rook should have moved here")
         self.assertEqual(m.get((1,4)), 0, "Rook should have left square")
-
 
     def test_Wrook_capture(self):
         m = src.module.Module()
@@ -162,7 +160,6 @@ class TestChess(unittest.TestCase):
             m.display()
             raise
 
-    
     def test_Wrook_ally(self):
         m = src.module.Module()
         rook = Rook(m.genID(), 1,(1,4))
@@ -173,7 +170,6 @@ class TestChess(unittest.TestCase):
         self.assertEqual(m.get((1,4)), rook, "Rook should not have moved when attacking ally")
         self.assertEqual(m.get((1,5)), knight, "Rook shouldn't capture ally")
 
-    
     def test_Brook_movementY(self):
         m = src.module.Module()
         rook = Rook(m.genID(), 2,(1,8))
@@ -197,7 +193,6 @@ class TestChess(unittest.TestCase):
             print(e,"\n\n")
             raise
 
-
     def test_Brook_movementX(self):
         m = src.module.Module()
         rook = Rook(m.genID(), 1,(1,4))
@@ -205,7 +200,6 @@ class TestChess(unittest.TestCase):
         m.moveCheck((1,4),(4,4))
         self.assertEqual(m.get((4,4)), rook, "Rook should have moved here")
         self.assertEqual(m.get((1,4)), 0, "Rook should have left square")
-
 
     def test_Brook_capture(self):
         m = src.module.Module()
