@@ -16,10 +16,12 @@ class Board:
             self.grid.append(tempList)
     
     def save(self, name):
-        self.saves[name] = self.grid
+        self.saves[name] = self.grid.copy()
+        e = 3
         
     def load(self, name):
         if name in self.saves.keys():
+            self.grid = self.saves[name].copy()
             return self.saves[name]
         print(name, "save not found.")
         return

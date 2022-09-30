@@ -7,6 +7,7 @@ class Module:
     gb = Board(8,8)
     turnNum = 0
     turn = 0
+    idNum = 0
 
     def __init__(self):
         self.reset()
@@ -16,22 +17,22 @@ class Module:
         self.turnNum = 1
         self.turn = 1
         self.gb = Board(8,8)
-        self.gb.set((1,1),Rook(1,(1,1)))
-        self.gb.set((2,1),Knight(1,(2,1)))
-        self.gb.set((3,1),Bishop(1,(3,1)))
-        self.gb.set((4,1),Queen(1,(4,1)))
-        self.gb.set((5,1),King(1,(5,1)))
-        self.gb.set((6,1),Bishop(1,(6,1)))
-        self.gb.set((7,1),Knight(1,(7,1)))
-        self.gb.set((8,1),Rook(1,(8,1)))
-        self.gb.set((1,2),Pawn(1,(1,2)))
-        self.gb.set((2,2),Pawn(1,(2,2)))
-        self.gb.set((3,2),Pawn(1,(3,2)))
-        self.gb.set((4,2),Pawn(1,(4,2)))
-        self.gb.set((5,2),Pawn(1,(5,2)))
-        self.gb.set((6,2),Pawn(1,(6,2)))
-        self.gb.set((7,2),Pawn(1,(7,2)))
-        self.gb.set((8,2),Pawn(1,(8,2)))
+        self.gb.set((1,1),Rook(self.genID(), 1,(1,1)))
+        self.gb.set((2,1),Knight(self.genID(), 1,(2,1)))
+        self.gb.set((3,1),Bishop(self.genID(), 1,(3,1)))
+        self.gb.set((4,1),Queen(self.genID(), 1,(4,1)))
+        self.gb.set((5,1),King(self.genID(), 1,(5,1)))
+        self.gb.set((6,1),Bishop(self.genID(), 1,(6,1)))
+        self.gb.set((7,1),Knight(self.genID(), 1,(7,1)))
+        self.gb.set((8,1),Rook(self.genID(), 1,(8,1)))
+        self.gb.set((1,2),Pawn(self.genID(), 1,(1,2)))
+        self.gb.set((2,2),Pawn(self.genID(), 1,(2,2)))
+        self.gb.set((3,2),Pawn(self.genID(), 1,(3,2)))
+        self.gb.set((4,2),Pawn(self.genID(), 1,(4,2)))
+        self.gb.set((5,2),Pawn(self.genID(), 1,(5,2)))
+        self.gb.set((6,2),Pawn(self.genID(), 1,(6,2)))
+        self.gb.set((7,2),Pawn(self.genID(), 1,(7,2)))
+        self.gb.set((8,2),Pawn(self.genID(), 1,(8,2)))
         self.gb.set((0,3),0)
         self.gb.set((1,3),0)
         self.gb.set((2,3),0)
@@ -64,22 +65,22 @@ class Module:
         self.gb.set((5,6),0)
         self.gb.set((6,6),0)
         self.gb.set((7,6),0)
-        self.gb.set((1,7),Pawn(2,(1,7)))
-        self.gb.set((2,7),Pawn(2,(2,7)))
-        self.gb.set((3,7),Pawn(2,(3,7)))
-        self.gb.set((4,7),Pawn(2,(4,7)))
-        self.gb.set((5,7),Pawn(2,(5,7)))
-        self.gb.set((6,7),Pawn(2,(6,7)))
-        self.gb.set((7,7),Pawn(2,(7,7)))
-        self.gb.set((8,7),Pawn(2,(8,7)))
-        self.gb.set((1,8),Rook(2,(1,8)))
-        self.gb.set((2,8),Knight(2,(2,8)))
-        self.gb.set((3,8),Bishop(2,(3,8)))
-        self.gb.set((4,8),Queen(2,(4,8)))
-        self.gb.set((5,8),King(2,(5,8)))
-        self.gb.set((6,8),Bishop(2,(6,8)))
-        self.gb.set((7,8),Knight(2,(7,8)))
-        self.gb.set((8,8),Rook(2,(8,8)))
+        self.gb.set((1,7),Pawn(self.genID(), 2,(1,7)))
+        self.gb.set((2,7),Pawn(self.genID(), 2,(2,7)))
+        self.gb.set((3,7),Pawn(self.genID(), 2,(3,7)))
+        self.gb.set((4,7),Pawn(self.genID(), 2,(4,7)))
+        self.gb.set((5,7),Pawn(self.genID(), 2,(5,7)))
+        self.gb.set((6,7),Pawn(self.genID(), 2,(6,7)))
+        self.gb.set((7,7),Pawn(self.genID(), 2,(7,7)))
+        self.gb.set((8,7),Pawn(self.genID(), 2,(8,7)))
+        self.gb.set((1,8),Rook(self.genID(), 2,(1,8)))
+        self.gb.set((2,8),Knight(self.genID(), 2,(2,8)))
+        self.gb.set((3,8),Bishop(self.genID(), 2,(3,8)))
+        self.gb.set((4,8),Queen(self.genID(), 2,(4,8)))
+        self.gb.set((5,8),King(self.genID(), 2,(5,8)))
+        self.gb.set((6,8),Bishop(self.genID(), 2,(6,8)))
+        self.gb.set((7,8),Knight(self.genID(), 2,(7,8)))
+        self.gb.set((8,8),Rook(self.genID(), 2,(8,8)))
 
 
     def moveCheck(self,current,d): # p for piece, d for destination
@@ -178,3 +179,6 @@ class Module:
         return self.gb.load(name)
     
     
+    def genID(self):
+        self.idNum += 1
+        return self.idNum
