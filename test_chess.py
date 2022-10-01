@@ -14,6 +14,7 @@ class TestChess(unittest.TestCase):
     def test_Bpawn_1step(self):
         m = src.module.Module()
         pawn = m.get((1,7))
+        m.turn = 2
         m.moveCheck((1,7),(1,6))
         self.assertEqual(m.get((1,7)),0,"White Pawn shouldn't be in square where it left")
         self.assertEqual(m.get((1,6)),pawn, "Pawn should have moved")
@@ -23,6 +24,7 @@ class TestChess(unittest.TestCase):
         knight = Knight(m.genID(), 2,(1,6))
         pawn = m.get((1,7))
         m.set((1,6), knight)
+        m.turn = 2
         m.moveCheck((1,7), (1,6))
         try:
             self.assertEqual(m.get((1,7)), pawn, "A7 to A6 shouldn't move the pawn")
@@ -117,6 +119,7 @@ class TestChess(unittest.TestCase):
         m.set((1,3), bishop)
         move = "A3-D6"
         m.save(move)
+        m.turn = 2
         m.moveCheck((1,3),(4,6))
         try:
             self.assertEqual(m.get((1,3)), 0, "Bishop should have left A3")
@@ -133,6 +136,7 @@ class TestChess(unittest.TestCase):
         m.set((1,3), bishop)
         move = "A3-B3"
         m.save(move)
+        m.turn = 2
         m.moveCheck((1,3),(2,3))
         try:
             self.assertEqual(m.get((1,3)), bishop, "Bishop should not have left A4")
@@ -183,6 +187,7 @@ class TestChess(unittest.TestCase):
         m.set((2,4), knight)
         move = "A3-B4"
         m.save(move)
+        m.turn = 2
         m.moveCheck((1,3),(2,4))
         try:
             self.assertEqual(m.get((1,3)), 0, "Bishop should have left A3")
@@ -217,6 +222,7 @@ class TestChess(unittest.TestCase):
         m.set((2,4), knight)
         move = "A3-B4"
         m.save(move)
+        m.turn = 2
         m.moveCheck((1,3),(2,4))
         try:
             self.assertEqual(m.get((1,3)), bishop, "Bishop should not have left A3")
@@ -252,6 +258,7 @@ class TestChess(unittest.TestCase):
         m.set((2,4), knight)
         move = "A3-C5"
         m.save(move)
+        m.turn = 2
         m.moveCheck((1,3),(3,5))
         try:
             self.assertEqual(m.get((1,3)), bishop, "Bishop should not have left A3")
@@ -316,6 +323,7 @@ class TestChess(unittest.TestCase):
         knight = Knight(m.genID(),2,(3,3))
         m.set((3,3), knight)
         move = "C3-D5"
+        m.turn = 2
         m.moveCheck((3,3), (4,5))
         try:
             self.assertEqual(m.get((3,3)), 0, "Knight should have left C3")
@@ -344,6 +352,7 @@ class TestChess(unittest.TestCase):
         knight = Knight(m.genID(),2,(3,3))
         m.set((3,3), knight)
         move = "C3-D6"
+        m.turn = 2
         m.moveCheck((3,3), (3,6))
         try:
             self.assertEqual(m.get((3,3)), knight, "Knight should not have left C3")
@@ -376,6 +385,7 @@ class TestChess(unittest.TestCase):
         m.set((3,3), knight)
         m.set((4,5), bishop)
         move = "C3-D6"
+        m.turn = 2
         m.moveCheck((3,3), (4,5))
         try:
             self.assertEqual(m.get((3,3)), 0, "Knight should have left C3")
@@ -408,6 +418,7 @@ class TestChess(unittest.TestCase):
         m.set((3,3), knight)
         m.set((4,5), bishop)
         move = "C3-D6"
+        m.turn = 2
         m.moveCheck((3,3), (4,5))
         try:
             self.assertEqual(m.get((3,3)), knight, "Knight should not have left C3")
@@ -499,6 +510,7 @@ class TestChess(unittest.TestCase):
         m.set((1,8),rook)
         move = "A8-A4"
         m.save(move)
+        m.turn = 2
         m.moveCheck((1,8),(1,4))
         try:
             self.assertEqual(m.get((1,4)).getID(), rook.getID(), move+" Rook should be at A4")
@@ -517,8 +529,9 @@ class TestChess(unittest.TestCase):
 
     def test_Brook_movementX(self):
         m = src.module.Module()
-        rook = Rook(m.genID(), 1,(1,4))
+        rook = Rook(m.genID(), 2,(1,4))
         m.set((1,4), rook)
+        m.turn = 2
         m.moveCheck((1,4),(4,4))
         self.assertEqual(m.get((4,4)), rook, "Rook should have moved here")
         self.assertEqual(m.get((1,4)), 0, "Rook should have left square")
@@ -531,6 +544,7 @@ class TestChess(unittest.TestCase):
         m.set((8,4), knight)
         move = "A4-H8"
         m.save(move)
+        m.turn = 2
         m.moveCheck((1,4), (8,4))
         try:
             self.assertEqual(m.get((8,4)), rook, "Rook should have captured")
@@ -552,6 +566,7 @@ class TestChess(unittest.TestCase):
         m.set((6,4), Wbishop)
         move = "A4-H4"
         m.save(move)
+        m.turn = 2
         m.moveCheck((1,4), (8,4))
         try:
             self.assertEqual(m.get((1,4)), rook, move + ", Illigal Move, Rook should stay")
@@ -570,6 +585,7 @@ class TestChess(unittest.TestCase):
         knight = Knight(m.genID(), 2,(1,5))
         m.set((1,4), rook)
         m.set((1,5), knight)
+        m.turn = 2
         m.moveCheck((1,4), (1,5))
         self.assertEqual(m.get((1,4)), rook, "Rook should not have moved when attacking ally")
         self.assertEqual(m.get((1,5)), knight, "Rook shouldn't capture ally")
@@ -593,6 +609,7 @@ class TestChess(unittest.TestCase):
         queen = Queen(m.genID(),2,(3,3))
         m.set((3,3), queen)
         move = "C3-C4"
+        m.turn = 2
         m.moveCheck((3,3), (3,4))
         try:
             self.assertEqual(m.get((3,3)), 0, "Queen should have moved from C3")
@@ -621,6 +638,7 @@ class TestChess(unittest.TestCase):
         queen = Queen(m.genID(),2,(3,3))
         m.set((3,3), queen)
         move = "C3-D3"
+        m.turn = 2
         m.moveCheck((3,3), (4,3))
         try:
             self.assertEqual(m.get((3,3)), 0, "Queen should have moved from C3")
@@ -649,6 +667,7 @@ class TestChess(unittest.TestCase):
         queen = Queen(m.genID(),2,(3,3))
         m.set((3,3), queen)
         move = "C3-D4"
+        m.turn = 2
         m.moveCheck((3,3), (4,4))
         try:
             self.assertEqual(m.get((3,3)), 0, "Queen should have moved from C3")
@@ -681,6 +700,7 @@ class TestChess(unittest.TestCase):
         m.set((3,3), queen)
         m.set((3,4), knight)
         move = "C3-C4"
+        m.turn = 2
         m.moveCheck((3,3), (3,4))
         try:
             self.assertEqual(m.get((3,3)), 0, "Queen should have moved from C3")
@@ -713,6 +733,7 @@ class TestChess(unittest.TestCase):
         m.set((3,3), queen)
         m.set((3,4), knight)
         move = "C3-C4"
+        m.turn = 2
         m.moveCheck((3,3), (3,4))
         try:
             self.assertEqual(m.get((3,3)), queen, "Queen should not have moved from C3")
@@ -746,6 +767,7 @@ class TestChess(unittest.TestCase):
         m.set((3,3), queen)
         m.set((3,4), knight)
         move = "C3-C5"
+        m.turn = 2
         m.moveCheck((3,3), (3,5))
         try:
             self.assertEqual(m.get((3,3)), queen, "Queen should not have moved from C3")
@@ -780,6 +802,7 @@ class TestChess(unittest.TestCase):
         m.set((3,3), queen)
         m.set((3,4), knight)
         move = "C3-C5"
+        m.turn = 2
         m.moveCheck((3,3), (3,5))
         try:
             self.assertEqual(m.get((3,3)), queen, "Queen should not have moved from C3")
@@ -809,6 +832,7 @@ class TestChess(unittest.TestCase):
         king = King(m.genID(),2,(3,3))
         m.set((3,3), king)
         move = "C3-C4"
+        m.turn = 2
         m.moveCheck((3,3), (3,4))
         try:
             self.assertEqual(m.get((3,3)), 0, "King should have left C3")
@@ -837,6 +861,7 @@ class TestChess(unittest.TestCase):
         king = King(m.genID(),2,(3,3))
         m.set((3,3), king)
         move = "C3-C5"
+        m.turn = 2
         m.moveCheck((3,3), (3,5))
         try:
             self.assertEqual(m.get((3,3)), king, "King should not have left C3")
@@ -869,6 +894,7 @@ class TestChess(unittest.TestCase):
         m.set((3,3), king)
         m.set((3,4), knight)
         move = "C3-C4"
+        m.turn = 2
         m.moveCheck((3,3), (3,4))
         try:
             self.assertEqual(m.get((3,3)), 0, "King should have left C3")
@@ -961,6 +987,24 @@ class TestChess(unittest.TestCase):
             m.display()
             raise
    
+    def test_Wcastle_kingside_fail(self):
+        m = src.module.Module()
+        king = m.get((5,1))
+        rook = m.get((8,1))
+        knight = m.get((7,1))
+        m.set((6,1), 0)
+        move = "E1-G1"
+        m.moveCheck((5,1), (7,1))
+        try:
+            self.assertEqual(m.get((5,1)), king, "King should not have castled to G1")
+            self.assertEqual(m.get((6,1)), 0, "Rook should not have castled to D1")
+            self.assertEqual(m.get((8,1)), rook, "Rook should have stayed at H1")
+            self.assertEqual(m.get((7,1)), knight, "Knight should have stayed at G1")
+        except AssertionError as e:
+            print("\nWhite Castle Kingside Fail\n", move, e)
+            m.display()
+            raise
+
     def test_Bcastle_queenside(self):
         m = src.module.Module()
         king = m.get((5,8))
@@ -969,6 +1013,7 @@ class TestChess(unittest.TestCase):
         m.set((3,8), 0)
         m.set((4,8), 0)
         move = "E8-C8"
+        m.turn = 2
         m.moveCheck((5,8), (3,8))
         try:
             self.assertEqual(m.get((3,8)), king, "King should have castled to C8")
@@ -985,6 +1030,7 @@ class TestChess(unittest.TestCase):
         m.set((3,8), 0)
         m.set((4,8), 0)
         move = "E8-C8"
+        m.turn = 2
         m.moveCheck((5,8), (3,8))
         try:
             self.assertEqual(m.get((3,8)), 0, "King should not have castled to C8")
@@ -1003,6 +1049,7 @@ class TestChess(unittest.TestCase):
         m.set((6,8), 0)
         m.set((7,8), 0)
         move = "E8-G8"
+        m.turn = 2
         m.moveCheck((5,8), (7,8))
         try:
             self.assertEqual(m.get((7,8)), king, "King should have castled to F8")

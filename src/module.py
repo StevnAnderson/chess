@@ -87,6 +87,8 @@ class Module:
         p = self.gb.get(current)
         if p == 0:
             return False
+        if p.getTeam() != self.turn:
+            return False
         target = self.gb.get(d) # target is the piece at destination
         match p.character():
             case "pawn":
