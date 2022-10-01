@@ -95,6 +95,328 @@ class TestChess(unittest.TestCase):
         m.moveCheck((3,3),(4,4))
         self.assertEqual(m.get((3,3)),0,"After attacking, pawn should have moved")
 
+    def test_Wbish_move(self):
+        m = src.module.Module()
+        bishop = Bishop(m.genID(), 1, (1,3))
+        m.set((1,3), bishop)
+        move = "A3-D6"
+        m.save(move)
+        m.moveCheck((1,3),(4,6))
+        try:
+            self.assertEqual(m.get((1,3)), 0, "Bishop should have left A4")
+            self.assertEqual(m.get((4,6)), bishop, "Bishop should have moved to D6")
+        except AssertionError as e:
+            print("White Bishop Move\n",move,e)
+            m.display()
+            raise
+    
+    def test_Bbish_move(self):
+        m = src.module.Module()
+        m.turn = 2
+        bishop = Bishop(m.genID(), 2, (1,3))
+        m.set((1,3), bishop)
+        move = "A3-D6"
+        m.save(move)
+        m.moveCheck((1,3),(4,6))
+        try:
+            self.assertEqual(m.get((1,3)), 0, "Bishop should have left A3")
+            self.assertEqual(m.get((4,6)), bishop, "Bishop should have moved to D6")
+        except AssertionError as e:
+            print("Black Bishop Move\n",move,e)
+            m.display()
+            raise
+
+    def test_Bbish_move_fail(self):
+        m = src.module.Module()
+        m.turn = 2
+        bishop = Bishop(m.genID(), 2, (1,3))
+        m.set((1,3), bishop)
+        move = "A3-B3"
+        m.save(move)
+        m.moveCheck((1,3),(2,3))
+        try:
+            self.assertEqual(m.get((1,3)), bishop, "Bishop should not have left A4")
+            self.assertEqual(m.get((2,3)), 0, "Bishop should not have moved to D6")
+        except AssertionError as e:
+            print("Black Bishop move fail\n",move,e)
+            m.display()
+            raise
+
+    def test_Wbish_move_fail(self):
+        m = src.module.Module()
+        m.turn = 1
+        bishop = Bishop(m.genID(), 1, (1,3))
+        m.set((1,3), bishop)
+        move = "A3-B3"
+        m.save(move)
+        m.moveCheck((1,3),(2,3))
+        try:
+            self.assertEqual(m.get((1,3)), bishop, "Bishop should not have left A4")
+            self.assertEqual(m.get((2,3)), 0, "Bishop should not have moved to D6")
+        except AssertionError as e:
+            print("White Bishop move fail\n",move,e)
+            m.display()
+            raise
+
+    def test_Wbish_capture(self):
+        m = src.module.Module()
+        bishop = Bishop(m.genID(), 1, (1,3))
+        knight = Knight(m.genID(), 2, (2,4))
+        m.set((1,3), bishop)
+        m.set((2,4), knight)
+        move = "A3-B4"
+        m.save(move)
+        m.moveCheck((1,3),(2,4))
+        try:
+            self.assertEqual(m.get((1,3)), 0, "Bishop should have left A4")
+            self.assertEqual(m.get((2,4)), bishop, "Bishop should have captured on B4")
+        except AssertionError as e:
+            print("White Bishop capture\n",move,e)
+            m.display()
+            raise
+
+    def test_Bbish_capture(self):
+        m = src.module.Module()
+        bishop = Bishop(m.genID(), 2, (1,3))
+        knight = Knight(m.genID(), 1, (2,4))
+        m.set((1,3), bishop)
+        m.set((2,4), knight)
+        move = "A3-B4"
+        m.save(move)
+        m.moveCheck((1,3),(2,4))
+        try:
+            self.assertEqual(m.get((1,3)), 0, "Bishop should have left A3")
+            self.assertEqual(m.get((2,4)), bishop, "Bishop should have captured on B4")
+        except AssertionError as e:
+            print("Black Bishop Capture\n",move,e)
+            m.display()
+            raise
+
+    def test_Wbish_allyCapture(self):
+        m = src.module.Module()
+        bishop = Bishop(m.genID(), 1, (1,3))
+        knight = Knight(m.genID(), 1, (2,4))
+        m.set((1,3), bishop)
+        m.set((2,4), knight)
+        move = "A3-B4"
+        m.save(move)
+        m.moveCheck((1,4),(3,6))
+        try:
+            self.assertEqual(m.get((1,3)), bishop, "Bishop should not have left A3")
+            self.assertEqual(m.get((2,4)), knight, "Bishop should not have captured on B4")
+        except AssertionError as e:
+            print("White Bishop Ally Capture\n",move,e)
+            m.display()
+            raise
+
+    def test_Bbish_allyCapture(self):
+        m = src.module.Module()
+        bishop = Bishop(m.genID(), 2, (1,3))
+        knight = Knight(m.genID(), 2, (2,4))
+        m.set((1,3), bishop)
+        m.set((2,4), knight)
+        move = "A3-B4"
+        m.save(move)
+        m.moveCheck((1,3),(2,4))
+        try:
+            self.assertEqual(m.get((1,3)), bishop, "Bishop should not have left A3")
+            self.assertEqual(m.get((2,4)), knight, "Bishop should not have captured on B4")
+        except AssertionError as e:
+            print("Black Bishop Ally Capture\n",move,e)
+            m.display()
+            raise
+
+    def test_Wbish_jumpAlly(self):
+        m = src.module.Module()
+        bishop = Bishop(m.genID(), 1, (1,3))
+        knight = Knight(m.genID(), 1, (2,4))
+        m.set((1,3), bishop)
+        m.set((2,4), knight)
+        move = "A3-B4"
+        m.save(move)
+        m.moveCheck((1,3),(3,5))
+        try:
+            self.assertEqual(m.get((1,3)), bishop, "Bishop should not have left A3")
+            self.assertEqual(m.get((2,4)), knight, "Knight should not have moved")
+            self.assertEqual(m.get((3,5)), 0, "Bishop should not have jumped ally on C5")
+        except AssertionError as e:
+            print("White Bishop Jump Ally\n",move,e)
+            m.display()
+            raise
+
+    def test_Bbish_jumpAlly(self):
+        m = src.module.Module()
+        bishop = Bishop(m.genID(), 2, (1,3))
+        knight = Knight(m.genID(), 2, (2,4))
+        m.set((1,3), bishop)
+        m.set((2,4), knight)
+        move = "A3-C5"
+        m.save(move)
+        m.moveCheck((1,3),(3,5))
+        try:
+            self.assertEqual(m.get((1,3)), bishop, "Bishop should not have left A3")
+            self.assertEqual(m.get((2,4)), knight, "Knight should not have moved")
+            self.assertEqual(m.get((3,5)), 0, "Bishop should not have jumped ally on B4")
+        except AssertionError as e:
+            print("Black Bishop Jump Ally\n",move,e)
+            m.display()
+            raise
+
+    def test_Wbish_jumpOpponent(self):
+        m = src.module.Module()
+        bishop = Bishop(m.genID(), 1, (1,3))
+        knight = Knight(m.genID(), 2, (2,5))
+        m.set((1,4), bishop)
+        m.set((2,5), knight)
+        move = "A4-C6"
+        m.save(move)
+        m.moveCheck((1,4),(3,6))
+        try:
+            self.assertEqual(m.get((1,4)), 0, "Bishop should not have left A4")
+            self.assertEqual(m.get((3,6)), bishop, "Bishop should not have jumped opponent on C5")
+        except AssertionError as e:
+            print("White Bishop Jump Opponent\n",move,e)
+            m.display()
+            raise
+
+    def test_Wbish_jumpOpponent(self):
+        m = src.module.Module()
+        bishop = Bishop(m.genID(), 2, (1,3))
+        knight = Knight(m.genID(), 1, (2,4))
+        m.set((1,3), bishop)
+        m.set((2,4), knight)
+        move = "A3-C5"
+        m.save(move)
+        m.moveCheck((1,3),(3,5))
+        try:
+            self.assertEqual(m.get((1,3)), bishop, "Bishop should not have left A3")
+            self.assertEqual(m.get((2,4)), knight, "Knight should not have moved")
+            self.assertEqual(m.get((3,5)), 0, "Bishop should not have jumped opponent on C5")
+        except AssertionError as e:
+            print("White Bishop Jump Opponent\n",move,e)
+            m.display()
+            raise
+
+    def test_Wkngt_move(self):
+        m = src.module.Module()
+        knight = Knight(m.genID(),1,(3,3))
+        m.set((3,3), knight)
+        move = "C3-D5"
+        m.moveCheck((3,3), (4,5))
+        try:
+            self.assertEqual(m.get((3,3)), 0, "Knight should have left C3")
+            self.assertEqual(m.get((4,5)), knight, "Knight should have moved to D5")
+        except AssertionError as e:
+            print("\nWhite Knight Move\n", move, e)
+            m.display()
+            raise
+
+    def test_Bkngt_move(self):
+        m = src.module.Module()
+        knight = Knight(m.genID(),2,(3,3))
+        m.set((3,3), knight)
+        move = "C3-D5"
+        m.moveCheck((3,3), (4,5))
+        try:
+            self.assertEqual(m.get((3,3)), 0, "Knight should have left C3")
+            self.assertEqual(m.get((4,5)), knight, "Knight should have moved to D5")
+        except AssertionError as e:
+            print("\nBlack Knight Move\n", move, e)
+            m.display()
+            raise
+
+    def test_Wkngt_move_fail(self):
+        m = src.module.Module()
+        knight = Knight(m.genID(),1,(3,3))
+        m.set((3,3), knight)
+        move = "C3-D6"
+        m.moveCheck((3,3), (3,6))
+        try:
+            self.assertEqual(m.get((3,3)), knight, "Knight should not have left C3")
+            self.assertEqual(m.get((3,6)), 0, "Knight should not have moved to D5")
+        except AssertionError as e:
+            print("\nWhite Knight Move Fail\n", move, e)
+            m.display()
+            raise
+
+    def test_Bkngt_move_fail(self):
+        m = src.module.Module()
+        knight = Knight(m.genID(),2,(3,3))
+        m.set((3,3), knight)
+        move = "C3-D6"
+        m.moveCheck((3,3), (3,6))
+        try:
+            self.assertEqual(m.get((3,3)), knight, "Knight should not have left C3")
+            self.assertEqual(m.get((3,6)), 0, "Knight should not have moved to D5")
+        except AssertionError as e:
+            print("\nBlack Knight Move Fail")
+            m.display()
+            raise
+   
+    def test_Wkngt_capture(self):
+        m = src.module.Module()
+        knight = Knight(m.genID(),1,(3,3))
+        bishop = Bishop(m.genID(), 2, ((4,5)))
+        m.set((3,3), knight)
+        m.set((4,5), bishop)
+        move = "C3-D6"
+        m.moveCheck((3,3), (4,5))
+        try:
+            self.assertEqual(m.get((3,3)), 0, "Knight should have left C3")
+            self.assertEqual(m.get((4,5)), knight, "Knight should have captured D5")
+        except AssertionError as e:
+            print("\nWhite Knight Capture\n", move, e)
+            m.display()
+            raise
+
+    def test_Bkngt_capture(self):
+        m = src.module.Module()
+        knight = Knight(m.genID(), 2,(3,3))
+        bishop = Bishop(m.genID(), 1, (4,5))
+        m.set((3,3), knight)
+        m.set((4,5), bishop)
+        move = "C3-D6"
+        m.moveCheck((3,3), (4,5))
+        try:
+            self.assertEqual(m.get((3,3)), 0, "Knight should have left C3")
+            self.assertEqual(m.get((4,5)), knight, "Knight should have captured D5")
+        except AssertionError as e:
+            print("\nBlack Knight Capture\n", move, e)
+            m.display()
+            raise
+
+    def test_Wkngt_capture_Ally(self):
+        m = src.module.Module()
+        knight = Knight(m.genID(), 1,(3,3))
+        bishop = Bishop(m.genID(), 1, ((4,5)))
+        m.set((3,3), knight)
+        m.set((4,5), bishop)
+        move = "C3-D6"
+        m.moveCheck((3,3), (4,5))
+        try:
+            self.assertEqual(m.get((3,3)), knight, "Knight should not have left C3")
+            self.assertEqual(m.get((4,5)), bishop, "Knight should not have captured D5")
+        except AssertionError as e:
+            print("\nWhite Knight Capture Ally\n", move, e)
+            m.display()
+            raise
+
+    def test_Bkngt_capture_Ally(self):
+        m = src.module.Module()
+        knight = Knight(m.genID(), 2,(3,3))
+        bishop = Bishop(m.genID(), 2, ((4,5)))
+        m.set((3,3), knight)
+        m.set((4,5), bishop)
+        move = "C3-D6"
+        m.moveCheck((3,3), (4,5))
+        try:
+            self.assertEqual(m.get((3,3)), knight, "Knight should not have left C3")
+            self.assertEqual(m.get((4,5)), bishop, "Knight should not have captured D5")
+        except AssertionError as e:
+            print("\nBlack Knight Capture Ally\n", move, e)
+            m.display()
+            raise
+
     def test_Wrook_movementY(self):
         m = src.module.Module()
         rook = Rook(m.genID(), 1,(1,1))
@@ -252,6 +574,341 @@ class TestChess(unittest.TestCase):
         self.assertEqual(m.get((1,4)), rook, "Rook should not have moved when attacking ally")
         self.assertEqual(m.get((1,5)), knight, "Rook shouldn't capture ally")
 
+    def test_Wqueen_move_tile(self):
+        m = src.module.Module()
+        queen = Queen(m.genID(),1,(3,3))
+        m.set((3,3), queen)
+        move = "C3-C4"
+        m.moveCheck((3,3), (3,4))
+        try:
+            self.assertEqual(m.get((3,3)), 0, "Queen should have moved from C3")
+            self.assertEqual(m.get((3,4)), queen, "Queen should have moved to C4")
+        except AssertionError as e:
+            print("\nWhite Queen Move Tile\n", move, e)
+            m.display()
+            raise
+
+    def test_Bqueen_move_tile(self):
+        m = src.module.Module()
+        queen = Queen(m.genID(),2,(3,3))
+        m.set((3,3), queen)
+        move = "C3-C4"
+        m.moveCheck((3,3), (3,4))
+        try:
+            self.assertEqual(m.get((3,3)), 0, "Queen should have moved from C3")
+            self.assertEqual(m.get((3,4)), queen, "Queen should have moved to C4")
+        except AssertionError as e:
+            print("\nBlack Queen Move Tile\n", move, e)
+            m.display()
+            raise
+
+    def test_Wqueen_move_row(self):
+        m = src.module.Module()
+        queen = Queen(m.genID(),1,(3,3))
+        m.set((3,3), queen)
+        move = "C3-D3"
+        m.moveCheck((3,3), (4,3))
+        try:
+            self.assertEqual(m.get((3,3)), 0, "Queen should have moved from C3")
+            self.assertEqual(m.get((4,3)), queen, "Queen should have moved to D3")
+        except AssertionError as e:
+            print("\nWhite Queen Move Row\n", move, e)
+            m.display()
+            raise
+
+    def test_Bqueen_move_row(self):
+        m = src.module.Module()
+        queen = Queen(m.genID(),2,(3,3))
+        m.set((3,3), queen)
+        move = "C3-D3"
+        m.moveCheck((3,3), (4,3))
+        try:
+            self.assertEqual(m.get((3,3)), 0, "Queen should have moved from C3")
+            self.assertEqual(m.get((4,3)), queen, "Queen should have moved to D3")
+        except AssertionError as e:
+            print("\nBlack Queen Move Tile\n", move, e)
+            m.display()
+            raise
+
+    def test_Wqueen_move_diagnal(self):
+        m = src.module.Module()
+        queen = Queen(m.genID(),1,(3,3))
+        m.set((3,3), queen)
+        move = "C3-D4"
+        m.moveCheck((3,3), (4,4))
+        try:
+            self.assertEqual(m.get((3,3)), 0, "Queen should have moved from C3")
+            self.assertEqual(m.get((4,4)), queen, "Queen should have moved to D4")
+        except AssertionError as e:
+            print("\nWhite Queen Move Diagnal\n", move, e)
+            m.display()
+            raise
+
+    def test_Bqueen_move_diagnal(self):
+        m = src.module.Module()
+        queen = Queen(m.genID(),2,(3,3))
+        m.set((3,3), queen)
+        move = "C3-D4"
+        m.moveCheck((3,3), (4,4))
+        try:
+            self.assertEqual(m.get((3,3)), 0, "Queen should have moved from C3")
+            self.assertEqual(m.get((4,4)), queen, "Queen should have moved to D4")
+        except AssertionError as e:
+            print("\nBlack Queen Move Diagnal\n", move, e)
+            m.display()
+            raise
+
+    def test_Wqueen_capture(self):
+        m = src.module.Module()
+        queen = Queen(m.genID(),1,(3,3))
+        knight = Knight(m.genID(),2,(3,4))
+        m.set((3,3), queen)
+        m.set((3,4), knight)
+        move = "C3-C4"
+        m.moveCheck((3,3), (3,4))
+        try:
+            self.assertEqual(m.get((3,3)), 0, "Queen should have moved from C3")
+            self.assertEqual(m.get((3,4)), queen, "Queen should have captured on C4")
+        except AssertionError as e:
+            print("\nWhite Queen Capture\n", move, e)
+            m.display()
+            raise
+
+    def test_Bqueen_capture(self):
+        m = src.module.Module()
+        queen = Queen(m.genID(),2,(3,3))
+        knight = Knight(m.genID(),1,(3,4))
+        m.set((3,3), queen)
+        m.set((3,4), knight)
+        move = "C3-C4"
+        m.moveCheck((3,3), (3,4))
+        try:
+            self.assertEqual(m.get((3,3)), 0, "Queen should have moved from C3")
+            self.assertEqual(m.get((3,4)), queen, "Queen should have captured on C4")
+        except AssertionError as e:
+            print("\nBlack Queen Capture\n", move, e)
+            m.display()
+            raise
+
+    def test_Wqueen_capture_ally(self):
+        m = src.module.Module()
+        queen = Queen(m.genID(),1,(3,3))
+        knight = Knight(m.genID(),1,(3,4))
+        m.set((3,3), queen)
+        m.set((3,4), knight)
+        move = "C3-C4"
+        m.moveCheck((3,3), (3,4))
+        try:
+            self.assertEqual(m.get((3,3)), queen, "Queen should not have moved from C3")
+            self.assertEqual(m.get((3,4)), knight, "Queen should not have captured on C4")
+        except AssertionError as e:
+            print("\nWhite Queen Capture Ally\n", move, e)
+            m.display()
+            raise
+
+    def test_Bqueen_capture_ally(self):
+        m = src.module.Module()
+        queen = Queen(m.genID(),2,(3,3))
+        knight = Knight(m.genID(),2,(3,4))
+        m.set((3,3), queen)
+        m.set((3,4), knight)
+        move = "C3-C4"
+        m.moveCheck((3,3), (3,4))
+        try:
+            self.assertEqual(m.get((3,3)), queen, "Queen should not have moved from C3")
+            self.assertEqual(m.get((3,4)), knight, "Queen should not have captured on C4")
+        except AssertionError as e:
+            print("\nBlack Queen Capture Ally\n", move, e)
+            m.display()
+            raise
+
+    def test_Wqueen_jump_ally(self):
+        m = src.module.Module()
+        queen = Queen(m.genID(),1,(3,3))
+        knight = Knight(m.genID(),1,(3,4))
+        m.set((3,3), queen)
+        m.set((3,4), knight)
+        move = "C3-C5"
+        m.moveCheck((3,3), (3,5))
+        try:
+            self.assertEqual(m.get((3,3)), queen, "Queen should not have moved from C3")
+            self.assertEqual(m.get((3,4)), knight, "Knight should not have moved on C4")
+            self.assertEqual(m.get((3,5)), 0, "Queen should not have jumped ally on C4")
+        except AssertionError as e:
+            print("\nWhite Queen Jump Ally\n", move, e)
+            m.display()
+            raise
+
+    def test_Bqueen_jump_ally(self):
+        m = src.module.Module()
+        queen = Queen(m.genID(),2,(3,3))
+        knight = Knight(m.genID(),2,(3,4))
+        m.set((3,3), queen)
+        m.set((3,4), knight)
+        move = "C3-C5"
+        m.moveCheck((3,3), (3,5))
+        try:
+            self.assertEqual(m.get((3,3)), queen, "Queen should not have moved from C3")
+            self.assertEqual(m.get((3,4)), knight, "Knight should not have moved on C4")
+            self.assertEqual(m.get((3,5)), 0, "Queen should not have jumped ally on C4")
+        except AssertionError as e:
+            print("\nBlack Queen Jump Ally\n", move, e)
+            m.display()
+            raise
+
+    def test_Wqueen_jump_opponent(self):
+        m = src.module.Module()
+        queen = Queen(m.genID(),1,(3,3))
+        knight = Knight(m.genID(),2,(3,4))
+        m.set((3,3), queen)
+        m.set((3,4), knight)
+        move = "C3-C5"
+        m.moveCheck((3,3), (3,5))
+        try:
+            self.assertEqual(m.get((3,3)), queen, "Queen should not have moved from C3")
+            self.assertEqual(m.get((3,4)), knight, "Knight should not have moved on C4")
+            self.assertEqual(m.get((3,5)), 0, "Queen should not have jumped ally on C4")
+        except AssertionError as e:
+            print("\nWhite Queen Jump Opponent\n", move, e)
+            m.display()
+            raise
+
+    def test_Bqueen_jump_opponent(self):
+        m = src.module.Module()
+        queen = Queen(m.genID(),2,(3,3))
+        knight = Knight(m.genID(),1,(3,4))
+        m.set((3,3), queen)
+        m.set((3,4), knight)
+        move = "C3-C5"
+        m.moveCheck((3,3), (3,5))
+        try:
+            self.assertEqual(m.get((3,3)), queen, "Queen should not have moved from C3")
+            self.assertEqual(m.get((3,4)), knight, "Knight should not have moved on C4")
+            self.assertEqual(m.get((3,5)), 0, "Queen should not have jumped ally on C4")
+        except AssertionError as e:
+            print("\nBlack Queen Jump Opponent\n", move, e)
+            m.display()
+            raise
+
+    def test_Wking_move(self):
+        m = src.module.Module()
+        king = King(m.genID(),1,(3,3))
+        m.set((3,3), king)
+        move = "C3-C4"
+        m.moveCheck((3,3), (3,4))
+        try:
+            self.assertEqual(m.get((3,3)), 0, "King should have left C3")
+            self.assertEqual(m.get((3,4)), king, "King should have moved to C4")
+        except AssertionError as e:
+            print("\nWhite King Move\n", move, e)
+            m.display()
+            raise
+
+    def test_Bking_move(self):
+        m = src.module.Module()
+        king = King(m.genID(),2,(3,3))
+        m.set((3,3), king)
+        move = "C3-C4"
+        m.moveCheck((3,3), (3,4))
+        try:
+            self.assertEqual(m.get((3,3)), 0, "King should have left C3")
+            self.assertEqual(m.get((3,4)), king, "King should have moved to C4")
+        except AssertionError as e:
+            print("\nBlack King Move\n", move, e)
+            m.display()
+            raise
+
+    def test_Wking_move_fail(self):
+        m = src.module.Module()
+        king = King(m.genID(),1,(3,3))
+        m.set((3,3), king)
+        move = "C3-C5"
+        m.moveCheck((3,3), (3,5))
+        try:
+            self.assertEqual(m.get((3,3)), king, "King should not have left C3")
+            self.assertEqual(m.get((3,5)), 0, "King should not have moved to C4")
+        except AssertionError as e:
+            print("\nWhite King Move Fail\n", move, e)
+            m.display()
+            raise
+
+    def test_Bking_move_fail(self):
+        m = src.module.Module()
+        king = King(m.genID(),2,(3,3))
+        m.set((3,3), king)
+        move = "C3-C5"
+        m.moveCheck((3,3), (3,5))
+        try:
+            self.assertEqual(m.get((3,3)), king, "King should not have left C3")
+            self.assertEqual(m.get((3,5)), 0, "King should not have moved to C4")
+        except AssertionError as e:
+            print("\nBlack King Move Fail\n", move, e)
+            m.display()
+            raise
+
+    def test_Wking_capture(self):
+        m = src.module.Module()
+        king = King(m.genID(),1,(3,3))
+        knight = Knight(m.genID(), 2,(3,4))
+        m.set((3,3), king)
+        m.set((3,4), knight)
+        move = "C3-C4"
+        m.moveCheck((3,3), (3,4))
+        try:
+            self.assertEqual(m.get((3,3)), 0, "King should have left C3")
+            self.assertEqual(m.get((3,4)), king, "King should have captured on C4")
+        except AssertionError as e:
+            print("\nWhite King Capture\n", move, e)
+            m.display()
+            raise
+
+    def test_Bking_capture(self):
+        m = src.module.Module()
+        king = King(m.genID(), 2, (3,3))
+        knight = Knight(m.genID(), 1,(3,4))
+        m.set((3,3), king)
+        m.set((3,4), knight)
+        move = "C3-C4"
+        m.moveCheck((3,3), (3,4))
+        try:
+            self.assertEqual(m.get((3,3)), 0, "King should have left C3")
+            self.assertEqual(m.get((3,4)), king, "King should have captured on C4")
+        except AssertionError as e:
+            print("\nBlack King Capture\n", move, e)
+            m.display()
+            raise
+
+    def test_Wking_capture_ally(self):
+        m = src.module.Module()
+        king = King(m.genID(),1,(3,3))
+        knight = Knight(m.genID(), 1,(3,4))
+        m.set((3,3), king)
+        m.set((3,4), knight)
+        move = "C3-C4"
+        m.moveCheck((3,3), (3,4))
+        try:
+            self.assertEqual(m.get((3,3)), king, "King should not have left C3")
+            self.assertEqual(m.get((3,4)), knight, "King should not have captured ally on C4")
+        except AssertionError as e:
+            print("\nWhite King Capture Ally\n", move, e)
+            m.display()
+            raise
+
+    def test_Wking_capture_ally(self):
+        m = src.module.Module()
+        king = King(m.genID(),2,(3,3))
+        knight = Knight(m.genID(), 2,(3,4))
+        m.set((3,3), king)
+        m.set((3,4), knight)
+        move = "C3-C4"
+        m.moveCheck((3,3), (3,4))
+        try:
+            self.assertEqual(m.get((3,3)), king, "King should not have left C3")
+            self.assertEqual(m.get((3,4)), knight, "King should not have captured ally on C4")
+        except AssertionError as e:
+            print("\nBlack King Capture Ally\n", move, e)
+            m.display()
+            raise
 
 if __name__ == "__main__":
     unittest.main()

@@ -87,7 +87,7 @@ class Module:
         p = self.gb.get(current)
         if p == 0:
             return False
-        target = self.gb.get(d)
+        target = self.gb.get(d) # target is the piece at destination
         match p.character():
             case "pawn":
                 if not p.legalMove(d,target):
@@ -108,9 +108,31 @@ class Module:
             case "bishop":
                 if not p.legalMove(d,target):
                     return False
+                deltax = d[0] - p.x()
+                deltay = d[1] - p.y()
+                if deltax > 0:
+                    if deltay > 0:
+                        for n in range(1,deltax):
+                            if self.get((p.x()+n, p.y()+n)) != 0:
+                                return False
+                    else:
+                        for n in range(1,deltax):
+                            if m.get((p.x()+n, p.y()-n)) != 0:
+                                return False
+                else:
+                    if deltay > 0:
+                        for n in range(1,deltax):
+                            if m.get((p.x()-n, p.y()+n)) != 0:
+                                return False
+                    else:
+                        for n in range(1,deltax):
+                            if m.get((p.x()-n, p.y()-n)) != 0:
+                                return False
+                self.move(p,d)
             case "knight":
-                if not p.legalMove(d, target):
+                if not (p.legalMove(d,target)):
                     return False
+                self.move(p,d)
             case "rook":
                 if not p.legalMove(d,target):
                     return False
@@ -126,6 +148,49 @@ class Module:
                     if n != d[1] and n != p.getCoor()[1]:
                         if self.gb.get((p.getCoor()[0],n)) != 0:
                             return False
+                self.move(p,d)
+            case "queen":
+                if not p.legalMove(d,target):
+                    return False
+                if p.x()-d[0] == 0 or p.y()-d[1] == 0:
+                    xMin = min(p.getCoor()[0],d[0])
+                    xMax = max(p.getCoor()[0],d[0])
+                    yMin = min(p.getCoor()[1],d[1])
+                    yMax = max(p.getCoor()[1],d[1])
+                    for n in range(xMin,xMax):
+                        if n != d[0] and n != p.getCoor()[0]:
+                            if self.gb.get((n,p.getCoor()[1])) != 0:
+                                return False
+                    for n in range(yMin, yMax):
+                        if n != d[1] and n != p.getCoor()[1]:
+                            if self.gb.get((p.getCoor()[0],n)) != 0:
+                                return False
+                    self.move(p,d)
+                else:
+                    deltax = d[0] - p.x()
+                    deltay = d[1] - p.y()
+                    if deltax > 0:
+                        if deltay > 0:
+                            for n in range(1,deltax):
+                                if self.get((p.x()+n, p.y()+n)) != 0:
+                                    return False
+                        else:
+                            for n in range(1,deltax):
+                                if m.get((p.x()+n, p.y()-n)) != 0:
+                                    return False
+                    else:
+                        if deltay > 0:
+                            for n in range(1,deltax):
+                                if m.get((p.x()-n, p.y()+n)) != 0:
+                                    return False
+                        else:
+                            for n in range(1,deltax):
+                                if m.get((p.x()-n, p.y()-n)) != 0:
+                                    return False
+                    self.move(p,d)
+            case "king":
+                if not (p.legalMove(d,target)):
+                    return False
                 self.move(p,d)
 
 

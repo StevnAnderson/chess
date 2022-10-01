@@ -51,11 +51,11 @@ class King(chessPiece):
     def legalMove(self, destination, destinationOccupancy):
         if destination not in bounds:
             return False
-        if destinationOccupancy.getTeam() == self.getTeam():
+        if destinationOccupancy != 0 and destinationOccupancy.getTeam() == self.getTeam():
             return False
-        if abs(self.coor[0] - destination[0]) < 2 and abs(self.coor[1] - destination[1]) < 2:
-            return True
-        return False
+        if not(abs(self.coor[0] - destination[0]) < 2 and abs(self.coor[1] - destination[1]) < 2):
+            return False
+        return True
 
     def __str__(self):
         if self.team == 1:
@@ -76,7 +76,7 @@ class Queen(chessPiece):
     def legalMove(self,destination, destinationOccupancy):
         if destination not in bounds:
             return False
-        if destinationOccupancy.getTeam() == self.getTeam():
+        if destinationOccupancy != 0 and destinationOccupancy.getTeam() == self.getTeam():
             return False
         if self.coor[0] - destination[0] == 0 or \
             self.coor[1] - destination[1] == 0 or \
@@ -94,12 +94,14 @@ class Bishop(chessPiece):
             return "WBshp"
         return "BBshp"
     
-    def legalMove(self,destination):
+    def legalMove(self,destination, destinationOccupancy):
         if destination not in bounds:
             return False
-        if abs(self.coor[0] - destination[0]) == abs(self.coor[1] - destination[1]):
-            return True
-        return False
+        if not (abs(self.coor[0] - destination[0]) == abs(self.coor[1] - destination[1])):
+            return False
+        if destinationOccupancy != 0 and destinationOccupancy.getTeam() == self.getTeam():
+            return False
+        return True
     
     def character(self):
         return "bishop"
@@ -114,12 +116,12 @@ class Knight(chessPiece):
     def legalMove(self, destination, destinationOccupancy):
         if destination not in bounds:
             return False
-        if destinationOccupancy.getTeam() == self.getTeam():
+        if destinationOccupancy != 0 and destinationOccupancy.getTeam() == self.getTeam():
             return False
-        if (abs(self.coor[0] - destination[0]) == 2 and abs(self.coor[1] - destination[1]) == 1) or\
-            (abs(self.coor[1] - destination[1] == 2) and abs(self.coor[0] - destination[0]) == 1):
-            return True
-        return False
+        if not((abs(self.coor[0] - destination[0]) == 2 and abs(self.coor[1] - destination[1]) == 1) or\
+            (abs(self.coor[1] - destination[1]) == 2 and abs(self.coor[0] - destination[0]) == 1)):
+            return False
+        return True
 
     def character(self):
         return "knight"
