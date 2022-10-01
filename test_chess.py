@@ -910,5 +910,108 @@ class TestChess(unittest.TestCase):
             m.display()
             raise
 
+    def test_Wcastle_queenside(self):
+        m = src.module.Module()
+        king = m.get((5,1))
+        rook = m.get((1,1))
+        m.set((2,1), 0)
+        m.set((3,1), 0)
+        m.set((4,1), 0)
+        move = "E1-C1"
+        m.moveCheck((5,1), (3,1))
+        try:
+            self.assertEqual(m.get((3,1)), king, "King should have castled to C1")
+            self.assertEqual(m.get((4,1)), rook, "Rook should have calsted to D1")
+        except AssertionError as e:
+            print("\nWhite Castle Queenside\n", move, e)
+            m.display()
+            raise
+
+    def test_Wcastle_queenside_fail(self):
+        m = src.module.Module()
+        king = m.get((5,1))
+        rook = m.get((1,1))
+        m.set((3,1), 0)
+        m.set((4,1), 0)
+        move = "E1-C1"
+        m.moveCheck((5,1), (3,1))
+        try:
+            self.assertEqual(m.get((3,1)), 0, "King should not have castled to C1")
+            self.assertEqual(m.get((4,1)), 0, "Rook should not have castled to D1")
+            self.assertEqual(m.get((1,1)), rook, "Rook should have stayed at A1")
+            self.assertEqual(m.get((5,1)), king, "King should have stayed at E1")
+        except AssertionError as e:
+            print("\nWhite Castle Queenside\n", move, e)
+            m.display()
+            raise
+
+    def test_Wcastle_kingside(self):
+        m = src.module.Module()
+        king = m.get((5,1))
+        rook = m.get((8,1))
+        m.set((6,1), 0)
+        m.set((7,1), 0)
+        move = "E1-G1"
+        m.moveCheck((5,1), (7,1))
+        try:
+            self.assertEqual(m.get((7,1)), king, "King should have castled to F1")
+            self.assertEqual(m.get((6,1)), rook, "Rook should have calsted to E1")
+        except AssertionError as e:
+            print("\nWhite Castle Queenside\n", move, e)
+            m.display()
+            raise
+   
+    def test_Bcastle_queenside(self):
+        m = src.module.Module()
+        king = m.get((5,8))
+        rook = m.get((1,8))
+        m.set((2,8), 0)
+        m.set((3,8), 0)
+        m.set((4,8), 0)
+        move = "E8-C8"
+        m.moveCheck((5,8), (3,8))
+        try:
+            self.assertEqual(m.get((3,8)), king, "King should have castled to C8")
+            self.assertEqual(m.get((4,8)), rook, "Rook should have calsted to D8")
+        except AssertionError as e:
+            print("\nBlack Castle Queenside\n", move, e)
+            m.display()
+            raise
+
+    def test_Bcastle_queenside_fail(self):
+        m = src.module.Module()
+        king = m.get((5,8))
+        rook = m.get((1,8))
+        m.set((3,8), 0)
+        m.set((4,8), 0)
+        move = "E8-C8"
+        m.moveCheck((5,8), (3,8))
+        try:
+            self.assertEqual(m.get((3,8)), 0, "King should not have castled to C8")
+            self.assertEqual(m.get((4,8)), 0, "Rook should not have castled to D8")
+            self.assertEqual(m.get((1,8)), rook, "Rook should have stayed at A8")
+            self.assertEqual(m.get((5,8)), king, "King should have stayed at E8")
+        except AssertionError as e:
+            print("\Black Castle Queenside\n", move, e)
+            m.display()
+            raise
+
+    def test_Bcastle_kingside(self):
+        m = src.module.Module()
+        king = m.get((5,8))
+        rook = m.get((8,8))
+        m.set((6,8), 0)
+        m.set((7,8), 0)
+        move = "E8-G8"
+        m.moveCheck((5,8), (7,8))
+        try:
+            self.assertEqual(m.get((7,8)), king, "King should have castled to F8")
+            self.assertEqual(m.get((6,8)), rook, "Rook should have calsted to E8")
+        except AssertionError as e:
+            print("\Black Castle Queenside\n", move, e)
+            m.display()
+            raise
+
+    
 if __name__ == "__main__":
     unittest.main()

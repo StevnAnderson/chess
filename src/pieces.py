@@ -49,6 +49,9 @@ class Pawn(chessPiece):
     
 class King(chessPiece):
     def legalMove(self, destination, destinationOccupancy):
+        if self.moved == False:
+            if abs(destination[0] - self.x()) == 2 and self.y() - destination[1] == 0:
+                return True                
         if destination not in bounds:
             return False
         if destinationOccupancy != 0 and destinationOccupancy.getTeam() == self.getTeam():

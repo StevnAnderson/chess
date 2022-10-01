@@ -149,6 +149,7 @@ class Module:
                         if self.gb.get((p.getCoor()[0],n)) != 0:
                             return False
                 self.move(p,d)
+                p.Moved()
             case "queen":
                 if not p.legalMove(d,target):
                     return False
@@ -191,14 +192,34 @@ class Module:
             case "king":
                 if not (p.legalMove(d,target)):
                     return False
+                if abs(p.x() - d[0]) == 2 and p.getMoved()==False:
+                    if p.x() < d[0]:
+                        xmin = p.x()
+                        xmax = 8
+                    else:
+                        xmin = 1
+                        xmax = p.x()
+                    for n in range(xmin+1,xmax):
+                        if self.get((n,p.y())) != 0:    #Check each square between king and rook
+                            return False
+                    if xmin == p.x():
+                        self.move(self.get((xmax,p.y())), (p.x()+1,p.y()),False)
+                        self.move(p, (p.x()+2,p.y()))
+                        return
+                    else:
+                        self.move(self.get((xmin,p.y())), (p.x()-1,p.y()),False)
+                        self.move(p, (p.x()-2,p.y()))
+                        return
                 self.move(p,d)
+                p.Moved()
 
 
-    def move(self,p,d):
+    def move(self,p,d,tog=True):
         self.gb.set(p.getCoor(),0)
         self.gb.set(d,p)
         p.move(d)
-        self.toggleTurn()
+        if tog==True:
+            self.toggleTurn()
 
 
     def toggleTurn(self):
