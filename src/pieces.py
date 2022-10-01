@@ -20,7 +20,7 @@ class Pawn(chessPiece):
                 if destination[1] == 1:
                     self.promotion(self)
                 return True
-            if abs(self.coor[0] - destination[0]) == 1 and self.coor[1] - destination[1] == 1 and destinationOccupancy.getTeam() == 1:
+            if abs(self.coor[0] - destination[0]) == 1 and self.coor[1] - destination[1] == 1 and destinationOccupancy != 0 and destinationOccupancy.getTeam() == 1:
                 if destination[1] == 1:
                     self.promotion(self)
                 return True

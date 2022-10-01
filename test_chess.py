@@ -16,7 +16,7 @@ class TestChess(unittest.TestCase):
         pawn = m.get((1,7))
         m.turn = 2
         m.moveCheck((1,7),(1,6))
-        self.assertEqual(m.get((1,7)),0,"White Pawn shouldn't be in square where it left")
+        self.assertEqual(m.get((1,7)),0,"Black Pawn shouldn't be in square where it left")
         self.assertEqual(m.get((1,6)),pawn, "Pawn should have moved")
 
     def test_Bpawn_move_ally(self):

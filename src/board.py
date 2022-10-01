@@ -26,11 +26,17 @@ class Board:
         print(name, "save not found.")
         return
     
-    def visit(self,function):
-        for y in range(len(self.grid)):
-            for x in range(len(self.grid[0])):
-                function(self.get(x,y))
-    
+    def visit(self,function, param=None, piece=None):
+        if param == None:
+            for y in range(len(self.grid)):
+                for x in range(len(self.grid[0])):
+                    function(self.get(x,y))
+        else:
+            for y in range(1, len(self.grid)):
+                for x in range(1, len(self.grid[0])):
+                    if str(self.get((x,y))) == piece:
+                        function((x,y), param)
+
     def set(self,d,value):
         x, y = d[0], d[1]
         if x > len(self.grid) or x <= 0 \

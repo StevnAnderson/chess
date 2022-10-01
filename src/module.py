@@ -13,6 +13,9 @@ class Module:
         self.reset()
 
 
+    def visit(self,fun, param=None, piece=None):
+        self.gb.visit(fun, param, piece)
+
     def reset(self):
         self.turnNum = 1
         self.turn = 1
@@ -214,7 +217,7 @@ class Module:
                         return
                 self.move(p,d)
                 p.Moved()
-
+        
 
     def move(self,p,d,tog=True):
         self.gb.set(p.getCoor(),0)
@@ -244,7 +247,7 @@ class Module:
                 else:
                     print(self.gb.get((m,n)), end=" | ")
             print("\n     --------------------------------------------------------------")
-        print("   |   1   |   2   |   3   |   4   |   5   |   6   |   7   |   8   |\n")
+        print("   |   A   |   B   |   C   |   D   |   E   |   F   |   G   |   H   |\n")
 
 
     def get(self,c):
