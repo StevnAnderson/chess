@@ -181,16 +181,16 @@ class Module:
                                     return False
                         else:
                             for n in range(1,deltax):
-                                if m.get((p.x()+n, p.y()-n)) != 0:
+                                if self.get((p.x()+n, p.y()-n)) != 0:
                                     return False
                     else:
                         if deltay > 0:
                             for n in range(1,deltax):
-                                if m.get((p.x()-n, p.y()+n)) != 0:
+                                if self.get((p.x()-n, p.y()+n)) != 0:
                                     return False
                         else:
                             for n in range(1,deltax):
-                                if m.get((p.x()-n, p.y()-n)) != 0:
+                                if self.get((p.x()-n, p.y()-n)) != 0:
                                     return False
                     return True
             case "king":
@@ -220,15 +220,30 @@ class Module:
         if self.get(current) != 0 and self.get(current).getTeam() == self.turn and self.moveCheckHelper(current,d):
             self.move(self.gb.get(current),d)
 
-    def threatons(self,destination):
+    def threatonsWhite(self,destination):
         def threatonsHelper(currentCoor, tList):
+            tempPiece = self.get(destination)
+            self.set(destination, Pawn(self.genID(), 1, destination))
             if self.moveCheckHelper(currentCoor, destination):
                 tList.append(self.get(currentCoor))
+            self.set(destination, tempPiece)
 
         threatList = list()
         self.visit(threatonsHelper, threatList)
         return threatList
-        
+
+    def threatonsBlack(self,destination):
+        def threatonsHelper(currentCoor, tList):
+            tempPiece = self.get(destination)
+            self.set(destination, Pawn(self.genID(), 2, destination))
+            if self.moveCheckHelper(currentCoor, destination):
+                tList.append(self.get(currentCoor))
+            self.set(destination, tempPiece)
+
+        threatList = list()
+        self.visit(threatonsHelper, threatList)
+        return threatList
+
     def move(self,p,d,tog=True):
         self.gb.set(p.getCoor(),0)
         self.gb.set(d,p)
