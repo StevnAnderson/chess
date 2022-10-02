@@ -29,12 +29,12 @@ class Board:
     def visit(self,function, param=None, piece=None):
         if param == None:
             if piece == None:
-                for y in range(len(self.grid)):
-                    for x in range(len(self.grid[0])):
+                for y in range(1, len(self.grid)+1):
+                    for x in range(1, len(self.grid[0])+1):
                         function(self.get(x,y))
             else:
-                for y in range(len(self.grid)):
-                    for x in range(len(self.grid[0])):
+                for y in range(1, len(self.grid)+1):
+                    for x in range(1, len(self.grid[0])+1):
                         if piece == str(self.get((x,y))):
                             function(self.get(x,y))
         else:
@@ -43,8 +43,8 @@ class Board:
                     for x in range(1, len(self.grid[0])+1):
                         function((x,y), param)
             else:
-                for y in range(1, len(self.grid)):
-                    for x in range(1, len(self.grid[0])):
+                for y in range(1, len(self.grid)+1):
+                    for x in range(1, len(self.grid[0])+1):
                         if str(self.get((x,y))) == piece:
                             function((x,y), param)
 

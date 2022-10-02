@@ -11,8 +11,31 @@ def textMove(text, game):
         except:
             return False
         return True
-        
-
+    if len(text) == 3:
+        piece = pc(text[0])
+        collumn = sq(text[1])
+        row = int(text[2])
+        destination = (collumn,row)
+        if game.turn == 1:
+            tList = game.threatonsBlack(destination)
+            tList =list(filter(lambda x: str(x) == piece,tList))
+            if len(tList) > 1:
+                print("Ambiguous move.")
+                return False
+            elif len(tList) == 0:
+                return False
+            game.moveCheck(tList[0].getCoor(), destination)
+        else:
+            tList = game.threatonsWhite(destination)
+            tList =list(filter(lambda x: str(x) == piece,tList))
+            if len(tList) > 1:
+                print("Ambiguous move.")
+                return False
+            elif len(tList) == 0:
+                return False
+            game.moveCheck(tList[0].getCoor(), destination)
+                
+            
 def sq(letter):
      match letter:
         case "a":
@@ -34,6 +57,24 @@ def sq(letter):
         case _:
             return False
 
+def pc(letter):
+    if game.turn == 1:
+        ret = "W"
+    else:
+        ret = "B"
+    match letter:
+        case "R"|"r":
+            return ret + "Rook"
+        case "N"|"n":
+            return ret + "Kght"
+        case "B"|"b":
+            return ret + "Bshp"
+        case "K"|'k':
+            return ret + "King"
+        case "Q"|'q':
+            return ret + "Quen"
+        case _:
+            return False
 
 game = src.module.Module()
 
