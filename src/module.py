@@ -12,6 +12,8 @@ class Module:
     def __init__(self):
         self.reset()
 
+    def getTeam(self):
+        return self.turn
 
     def visit(self,fun, param=None, piece=None):
         self.gb.visit(fun, param, piece)
@@ -85,12 +87,9 @@ class Module:
         self.gb.set((7,8),Knight(self.genID(), 2,(7,8)))
         self.gb.set((8,8),Rook(self.genID(), 2,(8,8)))
 
-
-    def moveCheck(self,current,d): # p for piece, d for destination
+    def moveCheckHelper(self,current,d): # p for piece, d for destination
         p = self.gb.get(current)
         if p == 0:
-            return False
-        if p.getTeam() != self.turn:
             return False
         target = self.gb.get(d) # target is the piece at destination
         match p.character():
@@ -109,7 +108,7 @@ class Module:
                 else:   #pawn is attacking
                     if target.getTeam() == p.getTeam():
                         return False
-                self.move(p,d)
+                return True
             case "bishop":
                 if not p.legalMove(d,target):
                     return False
@@ -133,11 +132,11 @@ class Module:
                         for n in range(1,deltax):
                             if m.get((p.x()-n, p.y()-n)) != 0:
                                 return False
-                self.move(p,d)
+                return True
             case "knight":
                 if not (p.legalMove(d,target)):
                     return False
-                self.move(p,d)
+                return True
             case "rook":
                 if not p.legalMove(d,target):
                     return False
@@ -153,7 +152,7 @@ class Module:
                     if n != d[1] and n != p.getCoor()[1]:
                         if self.gb.get((p.getCoor()[0],n)) != 0:
                             return False
-                self.move(p,d)
+                return True
                 p.Moved()
             case "queen":
                 if not p.legalMove(d,target):
@@ -171,7 +170,7 @@ class Module:
                         if n != d[1] and n != p.getCoor()[1]:
                             if self.gb.get((p.getCoor()[0],n)) != 0:
                                 return False
-                    self.move(p,d)
+                    return True
                 else:
                     deltax = d[0] - p.x()
                     deltay = d[1] - p.y()
@@ -193,7 +192,7 @@ class Module:
                             for n in range(1,deltax):
                                 if m.get((p.x()-n, p.y()-n)) != 0:
                                     return False
-                    self.move(p,d)
+                    return True
             case "king":
                 if not (p.legalMove(d,target)):
                     return False
@@ -215,10 +214,21 @@ class Module:
                         self.move(self.get((xmin,p.y())), (p.x()-1,p.y()),False)
                         self.move(p, (p.x()-2,p.y()))
                         return
-                self.move(p,d)
-                p.Moved()
+                return True
         
+    def moveCheck(self, current,d):
+        if self.get(current) != 0 and self.get(current).getTeam() == self.turn and self.moveCheckHelper(current,d):
+            self.move(self.gb.get(current),d)
 
+    def threatons(self,destination):
+        def threatonsHelper(currentCoor, tList):
+            if self.moveCheckHelper(currentCoor, destination):
+                tList.append(self.get(currentCoor))
+
+        threatList = list()
+        self.visit(threatonsHelper, threatList)
+        return threatList
+        
     def move(self,p,d,tog=True):
         self.gb.set(p.getCoor(),0)
         self.gb.set(d,p)
@@ -226,14 +236,12 @@ class Module:
         if tog==True:
             self.toggleTurn()
 
-
     def toggleTurn(self):
         if self.turn == 1:
             self.turn = 2
             return
         self.turn = 1
         return
-
 
     def display(self):
         t = "White" if self.turn == 1 else 2
@@ -249,10 +257,8 @@ class Module:
             print("\n     --------------------------------------------------------------")
         print("   |   A   |   B   |   C   |   D   |   E   |   F   |   G   |   H   |\n")
 
-
     def get(self,c):
         return self.gb.get(c)
-
     
     def set(self,c,p):
         if p == 0 or (p.x()==c[0] and p.y()==c[1]):
@@ -260,15 +266,12 @@ class Module:
             return
         else:
              return False
-
     
     def save(self,name):
         self.gb.save(name)
     
-
     def load(self,name):
         return self.gb.load(name)
-    
     
     def genID(self):
         self.idNum += 1

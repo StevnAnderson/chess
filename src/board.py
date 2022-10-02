@@ -28,14 +28,25 @@ class Board:
     
     def visit(self,function, param=None, piece=None):
         if param == None:
-            for y in range(len(self.grid)):
-                for x in range(len(self.grid[0])):
-                    function(self.get(x,y))
+            if piece == None:
+                for y in range(len(self.grid)):
+                    for x in range(len(self.grid[0])):
+                        function(self.get(x,y))
+            else:
+                for y in range(len(self.grid)):
+                    for x in range(len(self.grid[0])):
+                        if piece == str(self.get((x,y))):
+                            function(self.get(x,y))
         else:
-            for y in range(1, len(self.grid)):
-                for x in range(1, len(self.grid[0])):
-                    if str(self.get((x,y))) == piece:
+            if piece == None:
+                for y in range(1, len(self.grid)):
+                    for x in range(1, len(self.grid[0])):
                         function((x,y), param)
+            else:
+                for y in range(1, len(self.grid)):
+                    for x in range(1, len(self.grid[0])):
+                        if str(self.get((x,y))) == piece:
+                            function((x,y), param)
 
     def set(self,d,value):
         x, y = d[0], d[1]

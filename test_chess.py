@@ -1059,6 +1059,20 @@ class TestChess(unittest.TestCase):
             m.display()
             raise
 
+    def test_threatons(self):
+        m = src.module.Module()
+        queen = m.get((4,1))
+        knight = m.get((7,1))
+        pawn = m.get((7,2))
+        m.moveCheck((5,2), (5,4))
+        tList = m.threatons((6,3))
+        try:
+            self.assertIn(queen, tList, "queen should threaton F3")
+            self.assertIn(knight, tList, "knight should threaton F3")
+            self.assertIn(pawn, tList, "G Pawn should threaton F3")
+        except AssertionError as e:
+            print("\nThreatons\n", e)
+            raise
     
 if __name__ == "__main__":
     unittest.main()
