@@ -4,6 +4,23 @@ from src.pieces import *
 
 class TestChess(unittest.TestCase):
 
+    def test_clear(self):
+        def adder(n, total):
+            n += total
+            return n
+
+        m = src.module.Module()
+        m.clear()
+        n = 0
+        for i in m.gb.grid:
+            n += sum(i)
+        try:
+            self.assertEqual(n,0,"There should be no pieces on the board after reset.")
+        except AssertionError as e:
+            print("\nClear\n", e)
+            m.display()
+            raise
+
     def test_Wpawn_1step(self):
         m = src.module.Module()
         pawn = m.get((1,2))
@@ -977,8 +994,8 @@ class TestChess(unittest.TestCase):
         rook = m.get((8,1))
         m.set((6,1), 0)
         m.set((7,1), 0)
-        move = "E1-G1"
-        m.moveCheck((5,1), (7,1))
+        move = "Kg1"
+        m.textMove(move)
         try:
             self.assertEqual(m.get((7,1)), king, "King should have castled to F1")
             self.assertEqual(m.get((6,1)), rook, "Rook should have calsted to E1")
@@ -1012,9 +1029,9 @@ class TestChess(unittest.TestCase):
         m.set((2,8), 0)
         m.set((3,8), 0)
         m.set((4,8), 0)
-        move = "E8-C8"
+        move = "kc8"
         m.turn = 2
-        m.moveCheck((5,8), (3,8))
+        m.textMove(move)
         try:
             self.assertEqual(m.get((3,8)), king, "King should have castled to C8")
             self.assertEqual(m.get((4,8)), rook, "Rook should have calsted to D8")
@@ -1088,6 +1105,21 @@ class TestChess(unittest.TestCase):
             self.assertIn(pawn, tList, "G Pawn should threaton F6")
         except AssertionError as e:
             print("\nThreatons White\n", e)
+            raise
+
+    def test_disambiguate_White_knights(self):
+        m = src.module.Module()
+        knight1 = Knight(m.genID(), 1, (3,3))
+        knight2 = Knight(m.genID(), 1, (3,5))
+        m.set((3,3), knight1)
+        m.set((3,5), knight2)
+        move = "N5a4"
+        m.textMove(move)
+        try:
+            self.assertEqual(m.get((1,4)), knight2, "Knight should have moved")
+        except AssertionError as e:
+            print("\nDisambiguate White Knights\n", move, e)
+            m.display()
             raise
 
 

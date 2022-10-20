@@ -2,6 +2,7 @@ from re import I
 from .pieces import *
 from .board import *
 from math import floor, ceil
+from sys import exit
 
 class Module:
     gb = Board(8,8)
@@ -86,6 +87,52 @@ class Module:
         self.gb.set((6,8),Bishop(self.genID(), 2,(6,8)))
         self.gb.set((7,8),Knight(self.genID(), 2,(7,8)))
         self.gb.set((8,8),Rook(self.genID(), 2,(8,8)))
+   
+    def clear(self):
+        for i in self.gb.grid:
+            for j in i:
+                if j != 0:
+                    self.set(j.getCoor(),0)
+
+    def sq(self, letter):
+        match letter:
+            case "a":
+                return 1
+            case "b":
+                return 2
+            case "c":
+                return 3
+            case "d":
+                return 4
+            case "e":
+                return 5
+            case "f":
+                return 6
+            case "g":
+                return 7
+            case "h":
+                return 8
+            case _:
+                return False
+
+    def pc(self, letter):
+        if self.turn == 1:
+            ret = "W"
+        else:
+            ret = "B"
+        match letter:
+            case "R"|"r":
+                return ret + "Rook"
+            case "N"|"n":
+                return ret + "Kght"
+            case "B"|"b":
+                return ret + "Bshp"
+            case "K"|'k':
+                return ret + "King"
+            case "Q"|'q':
+                return ret + "Quen"
+            case _:
+                return False
 
     def moveCheckHelper(self,current,d): # p for piece, d for destination
         p = self.gb.get(current)
@@ -121,16 +168,16 @@ class Module:
                                 return False
                     else:
                         for n in range(1,deltax):
-                            if m.get((p.x()+n, p.y()-n)) != 0:
+                            if self.get((p.x()+n, p.y()-n)) != 0:
                                 return False
                 else:
                     if deltay > 0:
                         for n in range(1,deltax):
-                            if m.get((p.x()-n, p.y()+n)) != 0:
+                            if self.get((p.x()-n, p.y()+n)) != 0:
                                 return False
                     else:
                         for n in range(1,deltax):
-                            if m.get((p.x()-n, p.y()-n)) != 0:
+                            if self.get((p.x()-n, p.y()-n)) != 0:
                                 return False
                 return True
             case "knight":
@@ -220,6 +267,81 @@ class Module:
         if self.get(current) != 0 and self.get(current).getTeam() == self.turn and self.moveCheckHelper(current,d):
             self.move(self.gb.get(current),d)
 
+    def textMove(self, text):
+        if text.lower() == "exit" or text.lower() == "quit":
+            exit()
+        if len(text) == 2:
+            try:
+                if self.turn == 1:
+                    self.visit(self.moveCheck,(self.sq(text[0]), int(text[1])), "WPawn")
+                else:
+                    self.visit(self.moveCheck,(self.sq(text[0]), int(text[1])), "BPawn")
+            except:
+                return False
+            return True
+        if len(text) == 3:
+            piece = self.pc(text[0])
+            collumn = self.sq(text[1])
+            row = int(text[2])
+            destination = (collumn,row)
+            if self.turn == 1:
+                tList = self.threatonsBlack(destination)
+                difList = [x for x in self.canMove(destination) if x not in tList]
+                tList += difList
+                tList =list(filter(lambda x: str(x) == piece,tList))
+                tList = list(filter(lambda x: x.getTeam() == self.turn, tList))
+                if len(tList) > 1:
+                    print("Ambiguous move.")
+                    return False
+                elif len(tList) == 0:
+                    return False
+                self.moveCheck(tList[0].getCoor(), destination)
+            else:
+                tList = self.threatonsWhite(destination)
+                difList = [x for x in self.canMove(destination) if x not in tList]
+                tList += difList
+                tList =list(filter(lambda x: str(x) == piece,tList))
+                tList = list(filter(lambda x: x.getTeam() == self.turn, tList))
+                if len(tList) > 1:
+                    print("Ambiguous move.")
+                    return False
+                elif len(tList) == 0:
+                    return False
+                self.moveCheck(tList[0].getCoor(), destination)
+        if len(text) == 4:
+            piece = self.pc(text[0])
+            disambig = int()
+            DAtype = ""
+            try:
+                disambig = int(text[1])
+                DAtype = 'row' 
+            except:
+                disambig = self.sq(text[1])
+                DAtype = 'collumn'
+            collumn = self.sq(text[2])
+            row = int(text[3])
+            destination = (collumn,row)
+            if self.turn == 1:
+                tList = self.threatonsBlack(destination)
+                tList =list(filter(lambda x: str(x) == piece,tList))
+                if len(tList) > 1:
+                    if DAtype == row:
+                        tList = list(filter(lambda x: x.x() == disambig, tList))
+                    else:
+                        tList = list(filter(lambda x: x.y() == disambig, tList))
+                elif len(tList) == 0:
+                    return False
+                self.moveCheck(tList[0].getCoor(), destination)
+            else:
+                tList = self.threatonsWhite(destination)
+                tList =list(filter(lambda x: str(x) == piece,tList))
+                if len(tList) > 1:
+                    print("Ambiguous move.")
+                    return False
+                elif len(tList) == 0:
+                    return False
+                self.moveCheck(tList[0].getCoor(), destination)
+
     def threatonsWhite(self,destination):
         def threatonsHelper(currentCoor, tList):
             tempPiece = self.get(destination)
@@ -242,6 +364,15 @@ class Module:
 
         threatList = list()
         self.visit(threatonsHelper, threatList)
+        return threatList
+
+    def canMove(self, destination):
+        def canMoveHelper(currentCoor, tList):
+            if self.moveCheckHelper(currentCoor, destination):
+                tList.append(self.get(currentCoor))
+
+        threatList = list()
+        self.visit(canMoveHelper, threatList)
         return threatList
 
     def move(self,p,d,tog=True):
