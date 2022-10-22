@@ -16,13 +16,13 @@ class Board:
             self.grid.append(tempList)
     
     def save(self, name):
-        self.saves[name] = self.grid.copy()
-        e = 3
-        
+        self.saves[name] = self.copyBoard(self.grid)
+   
     def load(self, name):
         if name in self.saves.keys():
-            self.grid = self.saves[name].copy()
-            return self.saves[name]
+            copyBoard = self.copyBoard(self.saves[name])
+            self.grid = copyBoard
+            return self.grid
         print(name, "save not found.")
         return
     
@@ -31,12 +31,12 @@ class Board:
             if piece == None:
                 for y in range(1, len(self.grid)+1):
                     for x in range(1, len(self.grid[0])+1):
-                        function(self.get(x,y))
+                        function(self.get((x,y)))
             else:
                 for y in range(1, len(self.grid)+1):
                     for x in range(1, len(self.grid[0])+1):
                         if piece == str(self.get((x,y))):
-                            function(self.get(x,y))
+                            function(self.get((x,y)))
         else:
             if piece == None:
                 for y in range(1, len(self.grid)+1):
@@ -63,3 +63,10 @@ class Board:
             return None
         return self.grid[y-1][x-1]
         
+    def copyBoard(self,board1):
+        retBoard = list()
+        for i,n in enumerate(board1):
+            retBoard.append(list())
+            for m in n:
+                retBoard[i].append(m)
+        return retBoard

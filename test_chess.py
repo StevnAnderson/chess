@@ -4,11 +4,24 @@ from src.pieces import *
 
 class TestChess(unittest.TestCase):
 
-    def test_clear(self):
-        def adder(n, total):
-            n += total
-            return n
+    def test_wbish_jump_capture(self):
+        m = src.module.Module()
+        pawn = Pawn(m.genID(), 2,(3,4))
+        bishop = m.get((6,1))
+        m.set((3,4), pawn)
+        move = "bc4"
+        save = "white_bishop_jump_capture"
+        m.save(save)
+        m.textMove(move)
+        try:
+            self.assertEqual(m.get((6,1)), bishop, "Bishop should not have jumped ally")
+            self.assertEqual(m.get((3,4)), pawn, "Pawn should not have been taken")
+        except AssertionError as e:
+            print("\nWhite bishop jump capture\n", move, e)
+            m.display()
+            raise
 
+    def test_clear(self):
         m = src.module.Module()
         m.clear()
         n = 0
@@ -18,6 +31,74 @@ class TestChess(unittest.TestCase):
             self.assertEqual(n,0,"There should be no pieces on the board after reset.")
         except AssertionError as e:
             print("\nClear\n", e)
+            m.display()
+            raise
+
+    def test_save_load(self):
+        m = src.module.Module()
+        pawn = m.get((2,2))
+        t = m.turn
+        m.save("one")
+        move = "b3"
+        m.textMove(move)
+        m.load("one")
+        try:
+            self.assertEqual(m.get((2,2)),pawn, "Load state should have a pawn at C2")
+            self.assertEqual(m.turn, t, "The turn should be %s" % t)
+        except AssertionError as e:
+            print("\nSave/Load", e)
+            m.display()
+            raise
+        
+    def test_locateKings(self):
+        m = src.module.Module()
+        wKing = m.get((5,1)) 
+        bKing = m.get((5,8))
+        try:
+            self.assertIn (wKing, m.kings, "White king should be in kings")
+            self.assertIn(bKing, m.kings, "Black king should be in kings")
+        except AssertionError as e:
+            print("\nlocateKings", e)
+            m.display()
+            raise
+
+    def test_check_black1(self):
+        m = src.module.Module()
+        m.set((5,2),0)
+        m.set((5,7),0)
+        move = "qe2"
+        m.textMove(move)
+        try:
+            self.assertEqual(m.BlackCheckStatus(),True, "Black should be in check")
+        except AssertionError as e:
+            print("\nCheck Black 1", move, e)
+            m.display()
+            raise
+
+    def test_check_white1(self):
+        m = src.module.Module()
+        m.set((5,2),0)
+        m.set((5,7),0)
+        m.toggleTurn()
+        move = "qe7"
+        m.textMove(move)
+        try:
+            self.assertEqual(m.WhiteCheckStatus(),True, "White should be in check")
+        except AssertionError as e:
+            print("\nCheck", move, e)
+            m.display()
+            raise
+
+    def test_check_black_discover(self):
+        m = src.module.Module()
+        m.set((2,4), Bishop(m.genID(),2,(2,4)))
+        pawn = m.get((4,2))
+        move = "d3"
+        m.textMove(move)
+        try:
+            self.assertEqual(m.get((4,2)), pawn, "Pawn should not have moved putting king in check")
+        except AssertionError as e:
+            print("\nCheck black discovery")
             m.display()
             raise
 
@@ -176,6 +257,30 @@ class TestChess(unittest.TestCase):
             self.assertEqual(m.get((2,3)), 0, "Bishop should not have moved to D6")
         except AssertionError as e:
             print("White Bishop move fail\n",move,e)
+            m.display()
+            raise
+
+    def test_Wbish_jump(self):
+        m = src.module.Module()
+        bishop = m.get((3,1))
+        move = "be3"
+        save = "wbishop_jump"
+        m.save(save)
+        m.textMove(move)
+        try:
+            self.assertEqual(m.get((3,1)), bishop, "Bishop should not have jumped ally")
+        except AssertionError as e:
+            print("\nWhite Bishop Jump\n", move, e)
+            m.display()
+            raise
+
+    def test_wbish_jump_threaton(self):
+        m = src.module.Module()
+        tlist = m.threatonsBlack((6,4))
+        try:
+            self.assertEqual(tlist, list(), "No piece should threaton f4")
+        except AssertionError as e:
+            print("\nWhite Bishop Jump Threaton\n", e)
             m.display()
             raise
 
@@ -910,9 +1015,9 @@ class TestChess(unittest.TestCase):
         knight = Knight(m.genID(), 1,(3,4))
         m.set((3,3), king)
         m.set((3,4), knight)
-        move = "C3-C4"
+        move = "kc4"
         m.turn = 2
-        m.moveCheck((3,3), (3,4))
+        m.textMove(move)
         try:
             self.assertEqual(m.get((3,3)), 0, "King should have left C3")
             self.assertEqual(m.get((3,4)), king, "King should have captured on C4")

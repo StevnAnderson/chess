@@ -1,7 +1,5 @@
+from numpy import float64
 import src.module
-from enum import Enum
-
-
 
 game = src.module.Module()
 
@@ -11,4 +9,4 @@ def textMove(text):
 while True:
     game.display()
     textMove(input())
-
+float

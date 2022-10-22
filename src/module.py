@@ -9,9 +9,13 @@ class Module:
     turnNum = 0
     turn = 0
     idNum = 0
+    kings = list()
+    saves = {}
+    check = 0
 
     def __init__(self):
         self.reset()
+        self.locateKings()
 
     def getTeam(self):
         return self.turn
@@ -87,12 +91,14 @@ class Module:
         self.gb.set((6,8),Bishop(self.genID(), 2,(6,8)))
         self.gb.set((7,8),Knight(self.genID(), 2,(7,8)))
         self.gb.set((8,8),Rook(self.genID(), 2,(8,8)))
+        self.locateKings()
    
     def clear(self):
         for i in self.gb.grid:
             for j in i:
                 if j != 0:
                     self.set(j.getCoor(),0)
+        self.locateKings()
 
     def sq(self, letter):
         match letter:
@@ -163,20 +169,20 @@ class Module:
                 deltay = d[1] - p.y()
                 if deltax > 0:
                     if deltay > 0:
-                        for n in range(1,deltax):
+                        for n in range(1,abs(deltax)):
                             if self.get((p.x()+n, p.y()+n)) != 0:
                                 return False
                     else:
-                        for n in range(1,deltax):
+                        for n in range(1,abs(deltax)):
                             if self.get((p.x()+n, p.y()-n)) != 0:
                                 return False
                 else:
                     if deltay > 0:
-                        for n in range(1,deltax):
+                        for n in range(1,abs(deltax)):
                             if self.get((p.x()-n, p.y()+n)) != 0:
                                 return False
                     else:
-                        for n in range(1,deltax):
+                        for n in range(1,abs(deltax)):
                             if self.get((p.x()-n, p.y()-n)) != 0:
                                 return False
                 return True
@@ -265,7 +271,14 @@ class Module:
         
     def moveCheck(self, current,d):
         if self.get(current) != 0 and self.get(current).getTeam() == self.turn and self.moveCheckHelper(current,d):
+            self.save("checkChecker")
             self.move(self.gb.get(current),d)
+            if self.turn == 2 and self.WhiteCheckStatus():
+                self.load("checkChecker")
+            elif self.turn == 1 and self.BlackCheckStatus():
+                p = self.BlackCheckStatus()
+                self.load("checkChecker")
+        self.locateKings()
 
     def textMove(self, text):
         if text.lower() == "exit" or text.lower() == "quit":
@@ -341,6 +354,7 @@ class Module:
                 elif len(tList) == 0:
                     return False
                 self.moveCheck(tList[0].getCoor(), destination)
+        self.locateKings()
 
     def threatonsWhite(self,destination):
         def threatonsHelper(currentCoor, tList):
@@ -381,6 +395,7 @@ class Module:
         p.move(d)
         if tog==True:
             self.toggleTurn()
+        self.locateKings()
 
     def toggleTurn(self):
         if self.turn == 1:
@@ -409,16 +424,52 @@ class Module:
     def set(self,c,p):
         if p == 0 or (p.x()==c[0] and p.y()==c[1]):
             self.gb.set(c,p)
+            self.locateKings()
             return
         else:
              return False
-    
+        
     def save(self,name):
         self.gb.save(name)
+        self.saves[name] = (self.turn)
     
     def load(self,name):
-        return self.gb.load(name)
+        if name in self.saves.keys():
+            self.gb.load(name)
+            self.turn = self.saves[name]
+            self.locateKings()
+            return True
+        return False
     
     def genID(self):
         self.idNum += 1
         return self.idNum
+    
+    def WhiteCheckStatus(self):
+        ret = False
+        for k in self.kings:
+            if k.getTeam() == 1:
+                if self.threatonsWhite(k.getCoor()):
+                    ret = True
+        return ret        
+
+    def BlackCheckStatus(self):
+        ret = False
+        for k in self.kings:
+            if k.getTeam() == 2:
+                if self.threatonsBlack(k.getCoor()):
+                    ret = True
+        return ret        
+
+    def updateCheck(self):
+        pass
+
+    def locateKings(self):
+        kings = list()    
+        def addKing(k):
+            if k !=0:
+                if k.character() == "king":
+                    kings.append(k)
+    
+        self.visit(addKing)
+        self.kings = kings
