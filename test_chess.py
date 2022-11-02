@@ -4,6 +4,22 @@ from src.pieces import *
 
 class TestChess(unittest.TestCase):
 
+    def test_black_check2(self):
+        m = src.module.Module()
+        m.textMove("e4")
+        m.textMove("b6")
+        m.textMove("qh5")
+        pawn = m.get((7,7))
+        move = "g6"
+        m.save("black_check2")
+        m.textMove(move)
+        try:
+            self.assertEqual(pawn, m.get((7,6)), "The G pawn should have moved to G6")
+        except AssertionError as e:
+            print("\nBlack Check 2\n", move, e)
+            m.display()
+            raise
+
     def test_wbish_jump_capture(self):
         m = src.module.Module()
         pawn = Pawn(m.genID(), 2,(3,4))

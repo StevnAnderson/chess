@@ -238,11 +238,11 @@ class Module:
                                     return False
                     else:
                         if deltay > 0:
-                            for n in range(1,deltax):
+                            for n in range(1,deltay):
                                 if self.get((p.x()-n, p.y()+n)) != 0:
                                     return False
                         else:
-                            for n in range(1,deltax):
+                            for n in range(deltay,1):
                                 if self.get((p.x()-n, p.y()-n)) != 0:
                                     return False
                     return True
