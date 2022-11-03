@@ -242,7 +242,7 @@ class Module:
                                 if self.get((p.x()-n, p.y()+n)) != 0:
                                     return False
                         else:
-                            for n in range(deltay,1):
+                            for n in range(deltay,-1):
                                 if self.get((p.x()-n, p.y()-n)) != 0:
                                     return False
                     return True
@@ -259,6 +259,12 @@ class Module:
                     for n in range(xmin+1,xmax):
                         if self.get((n,p.y())) != 0:    #Check each square between king and rook
                             return False
+                        if self.turn == 1:
+                            if self.threatonsWhite((n,p.y())):
+                                return False
+                        else:
+                            if self.threatonsBlack((n,p.y())):
+                                return False
                     if xmin == p.x():
                         self.move(self.get((xmax,p.y())), (p.x()+1,p.y()),False)
                         self.move(p, (p.x()+2,p.y()))

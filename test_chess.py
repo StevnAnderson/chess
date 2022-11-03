@@ -4,6 +4,37 @@ from src.pieces import *
 
 class TestChess(unittest.TestCase):
 
+    def test_queen_movement2(self):
+        m = src.module.Module()
+        queen = Queen(m.genID(), 1, (2,4))
+        m.set((2,4), queen)
+        move = "qa3"
+        m.textMove(move)
+        try:
+            self.assertEqual(m.get((2,4)), 0, "Queen should have moved")
+        except AssertionError as e:
+            print("\nQueen Movement 2\n", move, e)
+            m.display()
+            raise
+
+
+    def test_black_castling_through_check(self):
+        m = src.module.Module()
+        m.set((2,4), Queen(m.genID(),1,(2,4)))
+        m.set((5,7), 0)
+        m.set((6,8), 0)
+        m.set((7,8), 0)
+        move = "kg8"
+        king = m.get((5,8))
+        m.turn = 2
+        m.textMove(move)
+        try:
+            self.assertEqual(m.get((5,8)), king, "King shouldn not castle through check.")
+        except AssertionError as e:
+            print("\nBlack castling through check\n", move, e)
+            m.display()
+            raise
+
     def test_black_check2(self):
         m = src.module.Module()
         m.textMove("e4")
